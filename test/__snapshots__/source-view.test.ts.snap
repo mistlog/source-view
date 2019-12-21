@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`source view code and markdown 1`] = `
+"# Code and markdown
+
+\`\`\`typescript
+class Test {}
+\`\`\`
+
+\`\`\`typescript
+function foo() {
+    console.log(\\"hi\\");
+}
+\`\`\`"
+`;
+
+exports[`source view exclude empty statement 1`] = `
+"\`\`\`typescript
+export interface foo {}
+\`\`\`
+
+\`\`\`typescript
+function foo() {}
+\`\`\`"
+`;
+
+exports[`source view exclude import 1`] = `
+"# test
+
+\`\`\`typescript
+function foo() {}
+\`\`\`"
+`;
+
+exports[`source view handle comment 1`] = `
+"leading comment of func1
+
+\`\`\`typescript
+function func1() {}
+\`\`\`
+
+trailing comment of func1 and leading comment of func2
+
+\`\`\`typescript
+function func2() {}
+\`\`\`
+
+trailing comment of func2"
+`;
+
+exports[`source view remove @ts-ignore 1`] = `
+"\`\`\`typescript
+function ignore() {
+    //other comment
+    console.log(\\"hi\\");
+}
+\`\`\`"
+`;
