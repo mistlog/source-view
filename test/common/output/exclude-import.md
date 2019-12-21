@@ -1,0 +1,5 @@
+# test
+
+```typescript
+function foo() {}
+```
