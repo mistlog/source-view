@@ -1,6 +1,6 @@
 {
   "name": "source-view",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple tool for turning code into document.",
   "keywords": [
     "literate programming",
@@ -11,6 +11,11 @@
     "document",
     "markdown"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mistlog/source-view"
+  },
+  "homepage": "https://github.com/mistlog/source-view/wiki",
   "bin": {
     "sv": "dist/cli/cli.js"
   },
