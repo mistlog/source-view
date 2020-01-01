@@ -31,6 +31,10 @@ describe("source view", () =>
     test("handle semi",()=>{
         SnapshotTest("handle-semi");
     })
+
+    test("expression statement",()=>{
+        SnapshotTest("expression-statement");
+    })
 })
 
 /**

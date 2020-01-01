@@ -1,4 +1,4 @@
-import { Node, File, isImportDeclaration, isEmptyStatement, Comment } from "@babel/types";
+import { isExpressionStatement, Node, File, isImportDeclaration, isEmptyStatement, Comment } from "@babel/types";
 import generate from "@babel/generator";
 import { parse } from "@babel/parser";
 import * as sha256 from "sha256";
@@ -23,15 +23,32 @@ class SourceView
 
     constructor(code: string)
     {
-        this.m_File = parse(code, { sourceType: "module", plugins: ["flow", "jsx"] });
+        const with_semi = this.CodeWithSemi(code);
+        this.m_File = parse(with_semi, { sourceType: "module", plugins: ["typescript", "jsx"] });
         this.m_Document = [];
         this.m_ParagraphSet = new Set<string>();
+    }
+
+    /**
+     * add semi after interface declaration to avoid parse error:
+     * eg.
+     *      interface foo{}
+     *      (add ; before it)<Foo> + function...
+     */
+    CodeWithSemi(raw: string)
+    {
+        const code = prettier.format(raw, {
+            parser: "typescript",
+            semi: false
+        });
+
+        return code;
     }
 
     ToMarkdown(): string
     {
         const body = this.m_File.program.body;
-        body.forEach(each => !isImportDeclaration(each) && this.NodeToMarkdown(each));
+        body.forEach(each => this.NodeToMarkdown(each));
         const markdown = this.m_Document.map(paragraph =>
         {
             if (paragraph.type === "code")
@@ -60,15 +77,9 @@ class SourceView
 
     NodeToMarkdown(node: Node)
     {
-        // ; after interface
-        if (isEmptyStatement(node))
-        {
-            return;
-        }
-
         //
         const leading = node.leadingComments;
-        const trailing = node.trailingComments;
+        let trailing = node.trailingComments;
 
         //
         this.AddCommentsToDocument(leading);
@@ -76,8 +87,21 @@ class SourceView
         //
         node.leadingComments = [];
         node.trailingComments = [];
-        const code = this.NodeToString(node);
-        this.AddToDocument(code, "code");
+
+        if (!isImportDeclaration(node) && !isEmptyStatement(node))
+        {
+            /**
+             * trailing comments were moved to expression after add semi by babel
+             */
+            if (isExpressionStatement(node) && !trailing)
+            {
+                trailing = node.expression.trailingComments;
+                node.expression.trailingComments = [];
+            }
+            
+            const code = this.NodeToString(node);
+            this.AddToDocument(code, "code");
+        }
 
         //
         this.AddCommentsToDocument(trailing);
