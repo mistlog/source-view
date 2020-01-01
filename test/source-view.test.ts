@@ -27,6 +27,18 @@ describe("source view", () =>
     {
         SnapshotTest("comment-order");
     })
+
+    test("handle semi",()=>{
+        SnapshotTest("handle-semi");
+    })
+
+    test("expression statement",()=>{
+        SnapshotTest("expression-statement");
+    })
+
+    test("export type",()=>{
+        SnapshotTest("export-type");
+    })
 })
 
 /**

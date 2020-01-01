@@ -3,5 +3,5 @@ export interface foo {}
 ```
 
 ```typescript
-function foo() {}
+function foo3() {}
 ```
