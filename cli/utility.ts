@@ -3,7 +3,6 @@ import * as traverse from "filewalker";
 import { CodeToMarkdown } from "../src/source-view";
 import { outputFileSync, removeSync } from "fs-extra";
 import { relative, join } from "path";
-import { resolve } from "url";
 import * as watch from "node-watch";
 
 export function GenerateDocument(source: string, target: string)
