@@ -3,8 +3,7 @@ import { readFileSync } from "fs";
 /*
 # test
 */
-
-function foo()
+function foo2()
 {
 
 }

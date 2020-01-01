@@ -1,5 +1,5 @@
 # test
 
 ```typescript
-function foo() {}
+function foo2() {}
 ```
