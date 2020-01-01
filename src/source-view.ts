@@ -1,7 +1,6 @@
-import { isExpressionStatement, Node, File, isImportDeclaration, isEmptyStatement, Comment } from "@babel/types";
+import { isTSTypeAliasDeclaration, isExportNamedDeclaration, isExpressionStatement, Node, File, isImportDeclaration, isEmptyStatement, Comment } from "@babel/types";
 import generate from "@babel/generator";
 import { parse } from "@babel/parser";
-import * as sha256 from "sha256";
 import * as prettier from "prettier";
 
 export function CodeToMarkdown(code: string)
@@ -13,20 +12,21 @@ interface IParagraph
 {
     text: string;
     type: string;
+    start: number;
 }
 
 class SourceView
 {
     m_File: File;
     m_Document: Array<IParagraph>;
-    m_ParagraphSet: Set<string>;
+    m_CommentSet: Set<number>;
 
     constructor(code: string)
     {
         const with_semi = this.CodeWithSemi(code);
         this.m_File = parse(with_semi, { sourceType: "module", plugins: ["typescript", "jsx"] });
         this.m_Document = [];
-        this.m_ParagraphSet = new Set<string>();
+        this.m_CommentSet = new Set<number>();
     }
 
     /**
@@ -41,14 +41,17 @@ class SourceView
             parser: "typescript",
             semi: false
         });
-
         return code;
     }
 
     ToMarkdown(): string
     {
+        //
         const body = this.m_File.program.body;
         body.forEach(each => this.NodeToMarkdown(each));
+
+        //
+        this.m_Document.sort((a, b) => a.start - b.start);
         const markdown = this.m_Document.map(paragraph =>
         {
             if (paragraph.type === "code")
@@ -60,25 +63,25 @@ class SourceView
         return markdown;
     }
 
-    AddToDocument(text: string, type: string)
+    AddToDocument(text: string, type: string, start: number)
     {
-        const hash = sha256(text);
-        if (this.m_ParagraphSet.has(hash))
+        if (this.m_CommentSet.has(start))
         {
             return;
         }
 
-        this.m_ParagraphSet.add(hash);
+        this.m_CommentSet.add(start);
         this.m_Document.push({
             text: text.trim(),
-            type
+            type,
+            start
         });
     }
 
     NodeToMarkdown(node: Node)
     {
         //
-        const leading = node.leadingComments;
+        let leading = node.leadingComments;
         let trailing = node.trailingComments;
 
         //
@@ -91,16 +94,21 @@ class SourceView
         if (!isImportDeclaration(node) && !isEmptyStatement(node))
         {
             /**
-             * trailing comments were moved to expression after add semi by babel
-             */
+            * trailing comments were moved to expression after add semi by babel
+            */
             if (isExpressionStatement(node) && !trailing)
             {
                 trailing = node.expression.trailingComments;
                 node.expression.trailingComments = [];
             }
-            
+            else if (isExportNamedDeclaration(node) && isTSTypeAliasDeclaration(node.declaration) && !trailing)
+            {
+                trailing = node.declaration.typeAnnotation.trailingComments;
+                node.declaration.typeAnnotation.trailingComments = [];
+            }
+
             const code = this.NodeToString(node);
-            this.AddToDocument(code, "code");
+            this.AddToDocument(code, "code", node.start);
         }
 
         //
@@ -110,8 +118,8 @@ class SourceView
     AddCommentsToDocument(comments: ReadonlyArray<Comment>)
     {
         comments && comments.
-            map(each => each.value).
-            forEach(each => this.AddToDocument(each, "markdown"));
+            map(each => ({ value: each.value, start: each.start })).
+            forEach(each => this.AddToDocument(each.value, "markdown", each.start));
     }
 
     NodeToString(node: Node)

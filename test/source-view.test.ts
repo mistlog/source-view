@@ -35,6 +35,10 @@ describe("source view", () =>
     test("expression statement",()=>{
         SnapshotTest("expression-statement");
     })
+
+    test("export type",()=>{
+        SnapshotTest("export-type");
+    })
 })
 
 /**
