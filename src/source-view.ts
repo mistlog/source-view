@@ -23,7 +23,7 @@ class SourceView
 
     constructor(code: string)
     {
-        this.m_File = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+        this.m_File = parse(code, { sourceType: "module", plugins: ["flow", "jsx"] });
         this.m_Document = [];
         this.m_ParagraphSet = new Set<string>();
     }
@@ -92,6 +92,7 @@ class SourceView
 
     NodeToString(node: Node)
     {
+        // minify it to handle new line around comment
         const raw = generate(node, {
             shouldPrintComment: comment => comment === "@ts-ignore" ? false : true,
             minified: true

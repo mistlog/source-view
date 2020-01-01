@@ -6,7 +6,7 @@ export interface foo
 ;
 ;
 
-function foo()
+function foo3()
 {
 
 };

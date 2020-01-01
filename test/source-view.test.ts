@@ -27,6 +27,10 @@ describe("source view", () =>
     {
         SnapshotTest("comment-order");
     })
+
+    test("handle semi",()=>{
+        SnapshotTest("handle-semi");
+    })
 })
 
 /**
