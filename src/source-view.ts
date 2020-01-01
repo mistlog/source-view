@@ -117,9 +117,7 @@ class SourceView
 
     AddCommentsToDocument(comments: ReadonlyArray<Comment>)
     {
-        comments && comments.
-            map(each => ({ value: each.value, start: each.start })).
-            forEach(each => this.AddToDocument(each.value, "markdown", each.start));
+        comments?.forEach(each => this.AddToDocument(each.value, "markdown", each.start));
     }
 
     NodeToString(node: Node)
