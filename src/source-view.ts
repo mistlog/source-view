@@ -24,7 +24,7 @@ class SourceView
     constructor(code: string)
     {
         const with_semi = this.CodeWithSemi(code);
-        this.m_File = parse(with_semi, { sourceType: "module", plugins: ["typescript", "jsx"] });
+        this.m_File = parse(with_semi, { sourceType: "module", plugins: ["typescript", "jsx", "optionalChaining"] });
         this.m_Document = [];
         this.m_CommentSet = new Set<number>();
     }

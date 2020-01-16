@@ -121,6 +121,15 @@ export interface Test {}
 \`\`\`"
 `;
 
+exports[`source view optional chaining 1`] = `
+"\`\`\`typescript
+function OptionalChaining() {
+    const foo = { a: 1 } as any;
+    const bar = foo?.a?.b;
+}
+\`\`\`"
+`;
+
 exports[`source view remove @ts-ignore 1`] = `
 "\`\`\`typescript
 function ignore() {
