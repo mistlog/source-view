@@ -28,16 +28,24 @@ describe("source view", () =>
         SnapshotTest("comment-order");
     })
 
-    test("handle semi",()=>{
+    test("handle semi", () =>
+    {
         SnapshotTest("handle-semi");
     })
 
-    test("expression statement",()=>{
+    test("expression statement", () =>
+    {
         SnapshotTest("expression-statement");
     })
 
-    test("export type",()=>{
+    test("export type", () =>
+    {
         SnapshotTest("export-type");
+    })
+
+    test("optional chaining", () =>
+    {
+        SnapshotTest("optional-chaining");
     })
 })
 
