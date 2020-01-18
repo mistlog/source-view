@@ -1,6 +1,6 @@
 {
   "name": "source-view",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple tool for turning code into document.",
   "keywords": [
     "literate programming",

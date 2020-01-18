@@ -1,7 +1,8 @@
 import { isTSTypeAliasDeclaration, isExportNamedDeclaration, isExpressionStatement, Node, File, isImportDeclaration, isEmptyStatement, Comment } from "@babel/types";
 import generate from "@babel/generator";
 import { parse } from "@babel/parser";
-import * as prettier from "prettier";
+import * as prettier from "prettier/standalone";
+import * as TypescriptParser from "prettier/parser-typescript";
 
 export function CodeToMarkdown(code: string)
 {
@@ -39,7 +40,8 @@ class SourceView
     {
         const code = prettier.format(raw, {
             parser: "typescript",
-            semi: false
+            semi: false,
+            plugins: [TypescriptParser] // babel bug: https://github.com/babel/babel/issues/8837
         });
         return code;
     }
@@ -134,7 +136,8 @@ class SourceView
         const code = prettier.format(raw, {
             parser: "typescript",
             printWidth: 200,
-            tabWidth: 4
+            tabWidth: 4,
+            plugins: [TypescriptParser]
         });
         return code;
     }
